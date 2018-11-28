@@ -75,7 +75,7 @@ class Shooting:
                 if(self.rect.centery > HEIGHT - 16):
                     self.rect.centery = HEIGHT - 16
 
-                if(press[pygame.K_SPACE] != 0) and (self.time % 10 == 0) and (self.time > 3)   :
+                if(press[pygame.K_SPACE] != 0)  and (self.time % 10 == 0) and (self.time > 3)   :
                     newsp = Shot(self.rect.centerx,self.rect.centery,0,1)
                     allgroup.add(newsp)
                 hitlist  = pygame.sprite.spritecollide(self, allgroup, False)
