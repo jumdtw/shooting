@@ -9,9 +9,12 @@ pygame.init()
 myclock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 myMenu = menu.Menu(screen)
+
 while True:
     myMenu.title()
     shooting.Shooting(screen)
-    pygame.quit()
+    break
+
+pygame.quit()
 
 
