@@ -11,7 +11,7 @@ OUTSIDE = 9999
 
 #スプライトクラス
 class Shooting:
-    def __init__(self):
+    def __init__(self,screen):
         class Spclass(pygame.sprite.Sprite):
             def __init__(self, x, y, angle, num):
                 pygame.sprite.Sprite.__init__(self)
@@ -52,6 +52,7 @@ class Shooting:
 
         #自機クラス
         class Player(Spclass):
+            score = 0
             def update(self):
                 #移動処理
                 press = pygame.key.get_pressed()
@@ -86,6 +87,7 @@ class Shooting:
 
         #enemy
         class Fighter(Spclass):
+
             def update(self):
                 #ジグザグ
                 self.rect.centery += 2
@@ -119,15 +121,14 @@ class Shooting:
                 self.enemy = enemy
         
         pygame.init()
-        screen = pygame.display.set_mode((WIDTH,HEIGHT))
+        #screen = pygame.display.set_mode((WIDTH,HEIGHT))
         myfont = pygame.font.Font(None, 100)
+        mmyfont = pygame.font.Font(None,35)
         myclock = pygame.time.Clock()
         charas = []
         charas.append(Characlass('./image/explobe.png',1,False))
         charas.append(Characlass('./image/chr_hero.png',1,False))
-        #charas.append(Characlass('./image/hero.PNG',1,False))
         charas.append(Characlass('./image/chr_enemy.png',99,True))
-        #charas.append(Characlass('./image/ME_sub.png',99,True))
         charas.append(Characlass('./image/hero.png',1,False))
         charas.append(Characlass('./image/ME_sub.png',1,True))
         charas.append(Characlass('./image/ME_BOSS.png',30,True))
@@ -163,12 +164,18 @@ class Shooting:
                     x = random.randint(0,WIDTH - 200) + 100
                     newsp = Fighter(x,0,180,4)
                     allgroup.add(newsp)
+
+                TTime = player.score
+                imageTime = mmyfont.render(str(TTime),True,WHITE)
+                screen.blit(imageTime,(20,20))
                 allgroup.update()
                 for sp in allgroup.sprites():
                     sp.time += 1
                     x = sp.rect.centerx
                     y = sp.rect.centery
                     if sp.hp <= 0:
+                        if(sp.enemy is not False):
+                            player.score += 100
                         allgroup.remove(sp)
                         newsp = Explosion(x,y,0,0)
                         allgroup.add(newsp)
