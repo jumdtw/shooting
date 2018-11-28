@@ -2,14 +2,25 @@ import pygame
 from pygame.locals import * 
 import random
 
+#rect 
 WIDTH  = 1024
 HEIGHT = 648
+
+#color
 BLUE = (0,0,255)
 RED = (255,0,0)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 YELLOW = (255,255,0)
-select = ['Start','Option','Exit']
+
+#main menu choices
+Choices = {
+    'START':0,
+    'OPTION':1,
+    'EXIT':2,
+}
+
+select = {0:'Start',1:'Option',2:'Exit'}
 class Menu:
     
     def __init__(self,screen):
@@ -35,9 +46,12 @@ class Menu:
             stars.append([x,y,2,2])
 
         while endflag:
+            
+            if(selectnum >= 3):
+                selectnum = 0
+            elif(selectnum < 0):
+                selectnum = 2
             self.Screen.fill(BLACK)
-            
-            
             #星を描画
             for i in range(len(stars)):
                 stars[i][1] = (stars[i][1] + i + 1) % HEIGHT
@@ -45,24 +59,31 @@ class Menu:
 
             #選択肢の文字列を描画
             y = 300
-            for i in select:
-                Selecttext = self.Selectfont.render(i,True,WHITE)
-                self.Screen.blit(Selecttext,(400,y))
+            
+            for i in range(len(select)):
+                if(selectnum == i):
+                    TEXTCOLOR = RED
+                else:
+                    TEXTCOLOR = WHITE
+                Selecttext = self.Selectfont.render(select[i],True,TEXTCOLOR)
+                self.Screen.blit(Selecttext,(460,y))
                 y += 40
 
             #タイトル描画
             TITLEtext = self.Titlefont.render("Shooting", True, YELLOW)
-            self.Screen.blit(TITLEtext,(WIDTH/2-200,HEIGHT/2-150)) 
+            self.Screen.blit(TITLEtext,(WIDTH/2-140,HEIGHT/2-110)) 
 
             #キーイベント処理
             for event in pygame.event.get():
-                if event.type == pygame.QUIT: endflag -= 1
+                if event.type == pygame.QUIT: 
+                    endflag -= 1
+                    self.SELECT = Choices['EXIT']
                 if event.type == KEYDOWN:
-                    if event.key == K_SPACE: endflag -= 1
-                    if event.key == K_DOWN: endflag -= 1
-                    if event.key == K_UP: endflag -= 1
-
-
+                    if event.key == K_DOWN: selectnum += 1
+                    if event.key == K_UP: selectnum -= 1
+                    if event.key == K_SPACE:
+                        endflag -= 1
+                        self.SELECT = selectnum
             
             self.myclock.tick(60)
             pygame.display.flip()

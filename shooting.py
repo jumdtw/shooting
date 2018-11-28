@@ -53,6 +53,7 @@ class Shooting:
         #自機クラス
         class Player(Spclass):
             score = 0
+            Credit = 3
             def update(self):
                 #移動処理
                 press = pygame.key.get_pressed()
@@ -133,6 +134,7 @@ class Shooting:
         charas.append(Characlass('./image/ME_sub.png',1,True))
         charas.append(Characlass('./image/ME_BOSS.png',30,True))
         stars = []
+        CREDITimage = pygame.image.load('./image/Small_hero.png').convert()
         for i in range(10):
             x = random.randint(0, WIDTH - 1)
             y = random.randint(0, HEIGHT -1)
