@@ -2,6 +2,7 @@
 import pygame
 import math
 import random
+from pygame.locals import * 
 
 WIDTH = 1024
 HEIGHT = 648
@@ -11,7 +12,11 @@ OUTSIDE = 9999
 
 #スプライトクラス
 class Shooting:
+
     def __init__(self,screen):
+        self.Screen = screen
+
+    def Main_Game(self):
         class Spclass(pygame.sprite.Sprite):
             def __init__(self, x, y, angle, num):
                 pygame.sprite.Sprite.__init__(self)
@@ -120,7 +125,9 @@ class Shooting:
                 self.image.set_colorkey(colorkey)
                 self.hp = hp 
                 self.enemy = enemy
-        
+
+
+
         pygame.init()
         #screen = pygame.display.set_mode((WIDTH,HEIGHT))
         myfont = pygame.font.Font(None, 100)
@@ -135,6 +142,7 @@ class Shooting:
         charas.append(Characlass('./image/ME_BOSS.png',30,True))
         stars = []
         CREDITimage = pygame.image.load('./image/Small_hero.png').convert()
+        ReturnMenuFlag = 0
         for i in range(10):
             x = random.randint(0, WIDTH - 1)
             y = random.randint(0, HEIGHT -1)
@@ -150,11 +158,18 @@ class Shooting:
             gameover = 0
             while endflag ==0:
                 for event in pygame.event.get():
-                    if event.type == pygame.QUIT: endflag = 1
-                screen.fill(BLACK)
+                    if event.type == pygame.QUIT: 
+                        endflag -= 1
+                        break
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            ReturnMenuFlag = 1
+                            endflag -= 1
+                            break
+                self.Screen.fill(BLACK)
                 for i in range(len(stars)):
                     stars[i][1] = (stars[i][1] + i + 1) % HEIGHT
-                    pygame.draw.rect(screen, WHITE, stars[i])
+                    pygame.draw.rect(self.Screen, WHITE, stars[i])
                 bosstimer -= 1
                 if bosstimer == 0:
                     boss = Boss(WIDTH/2,0,0,5)
@@ -169,7 +184,7 @@ class Shooting:
 
                 TTime = player.score
                 imageTime = mmyfont.render(str(TTime),True,WHITE)
-                screen.blit(imageTime,(20,20))
+                self.Screen.blit(imageTime,(20,20))
                 allgroup.update()
                 for sp in allgroup.sprites():
                     sp.time += 1
@@ -183,15 +198,16 @@ class Shooting:
                         allgroup.add(newsp)
                     if x<0 or x>WIDTH or y<0 or y>HEIGHT:
                         allgroup.remove(sp)
-                allgroup.draw(screen)
+                allgroup.draw(self.Screen)
                 if allgroup.has(player)==0:
                     imagetext = myfont.render("Game Over", True, WHITE)
-                    screen.blit(imagetext,(WIDTH/2-200,HEIGHT/2))
+                    self.Screen.blit(imagetext,(WIDTH/2-200,HEIGHT/2))
                     gameover += 1
                     if gameover >= 120: break
                 #60fps
                 myclock.tick(60)
                 #画面更新
                 pygame.display.flip()
-        pygame.quit()
+        return ReturnMenuFlag
 
+                

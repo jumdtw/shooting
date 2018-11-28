@@ -1,4 +1,5 @@
 import pygame
+#KEYDOWNの定義など
 from pygame.locals import * 
 import random
 
@@ -28,7 +29,6 @@ class Menu:
         self.SELECT = 0
         self.myclock = pygame.time.Clock()
         self.Screen = screen
-        self.Screen.fill(BLACK)
         self.Titlefont = pygame.font.Font(None, 100)
         self.Selectfont = pygame.font.Font(None, 50)
 
@@ -51,6 +51,7 @@ class Menu:
                 selectnum = 0
             elif(selectnum < 0):
                 selectnum = 2
+
             self.Screen.fill(BLACK)
             #星を描画
             for i in range(len(stars)):
@@ -59,7 +60,6 @@ class Menu:
 
             #選択肢の文字列を描画
             y = 300
-            
             for i in range(len(select)):
                 if(selectnum == i):
                     TEXTCOLOR = RED
@@ -76,14 +76,15 @@ class Menu:
             #キーイベント処理
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
-                    endflag -= 1
                     self.SELECT = Choices['EXIT']
+                    endflag -= 1
                 if event.type == KEYDOWN:
                     if event.key == K_DOWN: selectnum += 1
                     if event.key == K_UP: selectnum -= 1
                     if event.key == K_SPACE:
-                        endflag -= 1
                         self.SELECT = selectnum
+                        endflag -= 1
+
             
             self.myclock.tick(60)
             pygame.display.flip()

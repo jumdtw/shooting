@@ -18,15 +18,23 @@ pygame.init()
 myclock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 myMenu = menu.Menu(screen)
+myShooting = shooting.Shooting(screen)
+ReturnMenuFlag = 1
 
 while True:
     choices = myMenu.title()
     if choices == Choices["START"]:
-        shooting.Shooting(screen)
+        ReturnMenuFlag = myShooting.Main_Game()
+        continue
     elif choices == Choices["OPTION"]:
-        shooting.Shooting(screen)
+        ReturnMenuFlag = myShooting.Main_Game()
+        continue
     elif choices == Choices["EXIT"]:
         break
+
+    if not ReturnMenuFlag:
+        break
+
 
 pygame.quit()
 
