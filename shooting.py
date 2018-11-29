@@ -18,7 +18,7 @@ class Shooting:
     def __init__(self,screen):
         self.Screen = screen
 
-    def Main_Game(self):
+    def Main_Game(self,control):
         class Spclass(pygame.sprite.Sprite):
             def __init__(self, x, y, angle, num):
                 pygame.sprite.Sprite.__init__(self)
@@ -65,13 +65,13 @@ class Shooting:
                 #移動処理
                 press = pygame.key.get_pressed()
                 if(press[pygame.K_UP]):
-                    self.rect.centery -= 4
+                    self.rect.centery -= control
                 if(press[pygame.K_DOWN]):
-                    self.rect.centery += 4              
+                    self.rect.centery += control              
                 if(press[pygame.K_LEFT]):
-                    self.rect.centerx -= 4
+                    self.rect.centerx -= control
                 if(press[pygame.K_RIGHT]):
-                    self.rect.centerx += 4
+                    self.rect.centerx += control
 
                 
                 #センタリング
@@ -139,7 +139,8 @@ class Shooting:
         pygame.init()
         #screen = pygame.display.set_mode((WIDTH,HEIGHT))
         myfont = pygame.font.Font(None, 100)
-        mifont = pygame.font.Font(None,35)
+        miifont = pygame.font.Font(None,45)
+        mifont = pygame.font.Font(None,25)
         myclock = pygame.time.Clock()
         charas = []
         charas.append(Characlass('./image/explobe.png',100,False))
@@ -153,6 +154,7 @@ class Shooting:
         stars = []
         CREDITimage = pygame.image.load('./image/Small_hero.png').convert()
         ReturnMenuFlag = 0
+
         for i in range(10):
             x = random.randint(0, WIDTH - 1)
             y = random.randint(0, HEIGHT -1)
@@ -164,10 +166,12 @@ class Shooting:
             allgroup.empty()
             player = Player(WIDTH/2, HEIGHT*3/4, 0, 3)
             allgroup.add(player)
-            bosstimer = 60 * 20
+            bosscounter = 0
+            Bossflag = 0
             gameover = 0
             continueTime = 0
             ContinueFlag = 0
+            endtimer = 0
             while endflag ==0:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: 
@@ -175,6 +179,11 @@ class Shooting:
                         endflag -= 1
                         break
                     if event.type == KEYDOWN:
+                        if(endtimer):
+                            if(event.key==K_RETURN):
+                                ReturnMenuFlag = 1
+                                endflag -= 1
+                                break
                         if event.key == K_ESCAPE:
                             ReturnMenuFlag = 1
                             endflag -= 1
@@ -183,12 +192,23 @@ class Shooting:
                 for i in range(len(stars)):
                     stars[i][1] = (stars[i][1] + i + 1) % HEIGHT
                     pygame.draw.rect(self.Screen, WHITE, stars[i])
-                bosstimer -= 1
-                if bosstimer == 0:
+                
+                if bosscounter >= 15 and Bossflag == 0:
                     boss = Boss(WIDTH/2,0,0,5)
+                    Bossflag = 1
                     allgroup.add(boss) 
-                elif bosstimer < 0:
-                    if allgroup.has(boss)==0:bosstimer=60*20
+
+                if Bossflag >= 1:
+                    if allgroup.has(boss)==0:
+
+                        endtimer += 1
+                        player.hp = 999
+                        imagetext = myfont.render("Clear", True, WHITE)
+                        self.Screen.blit(imagetext,(WIDTH/2-85,HEIGHT/2))
+                        if(endtimer == 1):
+                            tttime = player.time
+                        imageTime = miifont.render("Clear Time:" + str(tttime),True,WHITE)
+                        self.Screen.blit(imageTime,(WIDTH/2-100,HEIGHT/2 + 80))
                 #enemy 
                 elif random.randint(0,45) == 0:
                     x = random.randint(0,WIDTH - 200) + 100
@@ -197,13 +217,16 @@ class Shooting:
 
                 #Scoreの描画
                 score = player.Score
-                imageScore = mifont.render(str(score),True,WHITE)
+                imageScore = mifont.render("enemy: "+str(score),True,WHITE)
                 self.Screen.blit(imageScore,(20,20))
+                time = player.time
+                imageTime = mifont.render("TIME: "+str(time),True,WHITE)
+                self.Screen.blit(imageTime,(20,40))
                 allgroup.update()
                 #Creditの描画
                 x = 20
                 for credit in range(player.Credit):
-                    self.Screen.blit(CREDITimage,(x,50))
+                    self.Screen.blit(CREDITimage,(x,60))
                     x += 20
 
                 for sp in allgroup.sprites():
@@ -212,7 +235,8 @@ class Shooting:
                     y = sp.rect.centery
                     if sp.hp <= 0:
                         if(sp.enemy is True):
-                            player.Score += 100
+                            player.Score += 1
+                            bosscounter += 1
                         if(sp == player):
                             ContinueFlag = 1
                             sp.hp = 1
