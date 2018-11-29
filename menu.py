@@ -70,7 +70,7 @@ class Menu:
                 y += 40
 
             #タイトル描画
-            TITLEtext = self.Titlefont.render("Shooting", True, YELLOW)
+            TITLEtext = self.Titlefont.render("Star Wars", True, YELLOW)
             self.Screen.blit(TITLEtext,(WIDTH/2-140,HEIGHT/2-110)) 
 
             #キーイベント処理

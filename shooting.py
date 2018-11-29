@@ -64,13 +64,18 @@ class Shooting:
                 press = pygame.key.get_pressed()
                 if(press[pygame.K_UP]):
                     self.rect.centery -= 4
+                press = pygame.key.get_pressed()
                 if(press[pygame.K_DOWN]):
                     self.rect.centery += 4
+
+                press = pygame.key.get_pressed()
                 if(press[pygame.K_LEFT]):
                     self.rect.centerx -= 4
+                press = pygame.key.get_pressed()
                 if(press[pygame.K_RIGHT]):
                     self.rect.centerx += 4
 
+                
                 #センタリング
                 if(self.rect.centerx < 16):
                     self.rect.centerx = 16
@@ -81,6 +86,7 @@ class Shooting:
                 if(self.rect.centery > HEIGHT - 16):
                     self.rect.centery = HEIGHT - 16
 
+                press = pygame.key.get_pressed()
                 if(press[pygame.K_SPACE] != 0)  and (self.time % 10 == 0) and (self.time > 3)   :
                     newsp = Shot(self.rect.centerx,self.rect.centery,0,1)
                     allgroup.add(newsp)
