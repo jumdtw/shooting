@@ -226,7 +226,7 @@ class Shooting:
                 
                 #player点滅
                 if ContinueFlag:
-                    if (player.time % 2 == 0):
+                    if (player.time % 5 == 0):
                         player.image = pygame.transform.rotate(charas[6].image, 0)
                     else:
                         player.image = pygame.transform.rotate(charas[3].image, 0)
