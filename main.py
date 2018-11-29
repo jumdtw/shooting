@@ -25,15 +25,16 @@ while True:
     choices = myMenu.title()
     if choices == Choices["START"]:
         ReturnMenuFlag = myShooting.Main_Game()
-        continue
+        if not ReturnMenuFlag:
+            break
     elif choices == Choices["OPTION"]:
         ReturnMenuFlag = myShooting.Main_Game()
-        continue
+        if not ReturnMenuFlag:
+            break
     elif choices == Choices["EXIT"]:
         break
 
-    if not ReturnMenuFlag:
-        break
+    
 
 
 pygame.quit()
