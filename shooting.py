@@ -10,6 +10,8 @@ BLACK = (0,0,0)
 WHITE = (255,255,255)
 OUTSIDE = 9999
 
+CREDIT = 3
+
 #スプライトクラス
 class Shooting:
 
@@ -57,21 +59,17 @@ class Shooting:
 
         #自機クラス
         class Player(Spclass):
-            score = 0
-            Credit = 3
+            Score = 0
+            Credit = CREDIT
             def update(self):
                 #移動処理
                 press = pygame.key.get_pressed()
                 if(press[pygame.K_UP]):
                     self.rect.centery -= 4
-                press = pygame.key.get_pressed()
                 if(press[pygame.K_DOWN]):
-                    self.rect.centery += 4
-
-                press = pygame.key.get_pressed()
+                    self.rect.centery += 4              
                 if(press[pygame.K_LEFT]):
                     self.rect.centerx -= 4
-                press = pygame.key.get_pressed()
                 if(press[pygame.K_RIGHT]):
                     self.rect.centerx += 4
 
@@ -93,9 +91,13 @@ class Shooting:
                 hitlist  = pygame.sprite.spritecollide(self, allgroup, False)
                 for sp in hitlist:
                     if sp.enemy == True:
-                        self.hp -= 1
-                        sp.hp -= 1 
-                        break
+                        if(sp.hp == 99):
+                            self.hp -= 1
+                            sp.rect.centerx = OUTSIDE
+                        else:
+                            self.hp -= 1
+                            sp.hp -= 1 
+                            break
 
         #enemy
         class Fighter(Spclass):
@@ -137,15 +139,17 @@ class Shooting:
         pygame.init()
         #screen = pygame.display.set_mode((WIDTH,HEIGHT))
         myfont = pygame.font.Font(None, 100)
-        mmyfont = pygame.font.Font(None,35)
+        mifont = pygame.font.Font(None,35)
         myclock = pygame.time.Clock()
         charas = []
-        charas.append(Characlass('./image/explobe.png',1,False))
+        charas.append(Characlass('./image/explobe.png',100,False))
         charas.append(Characlass('./image/chr_hero.png',1,False))
         charas.append(Characlass('./image/chr_enemy.png',99,True))
         charas.append(Characlass('./image/hero.png',1,False))
         charas.append(Characlass('./image/ME_sub.png',1,True))
         charas.append(Characlass('./image/ME_BOSS.png',30,True))
+        charas.append(Characlass('./image/None_hero.png',100,False))
+
         stars = []
         CREDITimage = pygame.image.load('./image/Small_hero.png').convert()
         ReturnMenuFlag = 0
@@ -162,9 +166,12 @@ class Shooting:
             allgroup.add(player)
             bosstimer = 60 * 20
             gameover = 0
+            continueTime = 0
+            ContinueFlag = 0
             while endflag ==0:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: 
+                        ReturnMenuFlag = 0
                         endflag -= 1
                         break
                     if event.type == KEYDOWN:
@@ -188,28 +195,66 @@ class Shooting:
                     newsp = Fighter(x,0,180,4)
                     allgroup.add(newsp)
 
-                TTime = player.score
-                imageTime = mmyfont.render(str(TTime),True,WHITE)
-                self.Screen.blit(imageTime,(20,20))
+                #Scoreの描画
+                score = player.Score
+                imageScore = mifont.render(str(score),True,WHITE)
+                self.Screen.blit(imageScore,(20,20))
                 allgroup.update()
+                #Creditの描画
+                x = 20
+                for credit in range(player.Credit):
+                    self.Screen.blit(CREDITimage,(x,50))
+                    x += 20
+
                 for sp in allgroup.sprites():
                     sp.time += 1
                     x = sp.rect.centerx
                     y = sp.rect.centery
                     if sp.hp <= 0:
-                        if(sp.enemy is not False):
-                            player.score += 100
-                        allgroup.remove(sp)
-                        newsp = Explosion(x,y,0,0)
-                        allgroup.add(newsp)
+                        if(sp.enemy is True):
+                            player.Score += 100
+                        if(sp == player):
+                            ContinueFlag = 1
+                            sp.hp = 1
+                            player.Credit -= 1
+                        else:
+                            allgroup.remove(sp)
+                            newsp = Explosion(x,y,0,0)
+                            allgroup.add(newsp)
                     if x<0 or x>WIDTH or y<0 or y>HEIGHT:
                         allgroup.remove(sp)
+                
+                #player点滅
+                if ContinueFlag:
+                    if (player.time % 2 == 0):
+                        player.image = pygame.transform.rotate(charas[6].image, 0)
+                    else:
+                        player.image = pygame.transform.rotate(charas[3].image, 0)
+                    continueTime += 1
+                    if continueTime >= 100:
+                        ContinueFlag = 0
+                        continueTime = 0
+                        player.image = pygame.transform.rotate(charas[3].image, 0)
+                
+                #スプライトの画像を描画
                 allgroup.draw(self.Screen)
-                if allgroup.has(player)==0:
+                #ガメオベラ処理
+                if player.Credit == 0:
+                    for sp in allgroup.sprites():
+                        if sp == player:
+                            x = sp.rect.centerx
+                            y = sp.rect.centery
+                            allgroup.remove(sp)
+                            newsp = Explosion(x,y,0,0)
+                            allgroup.add(newsp)
+
                     imagetext = myfont.render("Game Over", True, WHITE)
                     self.Screen.blit(imagetext,(WIDTH/2-200,HEIGHT/2))
                     gameover += 1
-                    if gameover >= 120: break
+                    if gameover >= 120: 
+                        endflag -= 1
+                        ReturnMenuFlag = 1     
+
                 #60fps
                 myclock.tick(60)
                 #画面更新
