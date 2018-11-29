@@ -24,11 +24,11 @@ ReturnMenuFlag = 1
 while True:
     choices = myMenu.title()
     if choices == Choices["START"]:
-        ReturnMenuFlag = myShooting.Main_Game()
+        ReturnMenuFlag = myShooting.Main_Game(10)
         if not ReturnMenuFlag:
             break
     elif choices == Choices["OPTION"]:
-        ReturnMenuFlag = myShooting.Main_Game()
+        ReturnMenuFlag = myShooting.Main_Game(10)
         if not ReturnMenuFlag:
             break
     elif choices == Choices["EXIT"]:
