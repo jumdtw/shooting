@@ -1,6 +1,7 @@
 import pygame 
 import shooting
 import menu
+import option
 
 #rect
 WIDTH  = 1024
@@ -18,17 +19,19 @@ pygame.init()
 myclock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 myMenu = menu.Menu(screen)
+myOption = option.Option(screen)
 myShooting = shooting.Shooting(screen)
 ReturnMenuFlag = 1
-
+Game_option = [2,2]
 while True:
     choices = myMenu.title()
     if choices == Choices["START"]:
-        ReturnMenuFlag = myShooting.Main_Game(10)
+        print(Game_option)
+        ReturnMenuFlag = myShooting.Main_Game(Game_option)
         if not ReturnMenuFlag:
             break
     elif choices == Choices["OPTION"]:
-        ReturnMenuFlag = myShooting.Main_Game(10)
+        Game_option = myOption.option(Game_option)
         if not ReturnMenuFlag:
             break
     elif choices == Choices["EXIT"]:

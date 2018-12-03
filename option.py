@@ -49,16 +49,17 @@ class Option:
         self.OptionName = pygame.font.Font(None, 80)
         self.Each_Option_level = pygame.font.Font(None, 70)
 
-    def option(self):
+    def option(self,return_Game_option):
 
         endflag = 1
         Game_option = {}
         #exsample
-        Cursor = [0,[2,2]]
         option_selected = 0
-
+        self.Cursor[0] = 0
+        n = 0
         for option in option_list:
-            self.Option[option][2] = 2
+            self.Option[option] = [n,option,return_Game_option[n]]
+            n+=1
 
         pygame.init()
 
@@ -90,7 +91,6 @@ class Option:
             elif option_selected >= len(option_list):
                 option_selected = 0
 
-            print(str(self.Cursor) + str(option_selected))
            
             self.Screen.fill(BLACK)
             #星を描画
@@ -104,9 +104,10 @@ class Option:
 
             for option in option_list:
 
+                #Optionの状態変化
                 if self.Option[option][0] == self.Cursor[0]:
                     self.Option[option][2] = self.Cursor[1][option_selected]
-
+                
                 if(self.Option[option][0]==self.Cursor[0]):
                     TEXTCOLOR = YELLOW
                 else:
@@ -153,10 +154,9 @@ class Option:
                         endflag -= 1
                         break
             
-            #print(str(self.Cursor) + str(option_selected))
-            
+
             self.myclock.tick(60)
             pygame.display.flip()
 
-        Game_option = Cursor[1]
+        Game_option = self.Cursor[1]
         return Game_option 
