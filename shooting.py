@@ -139,7 +139,7 @@ class Shooting:
         control = [3,6,10]
         fireball = [120,100,50]
         enemy_num = [70,45,25]
-        BOSScounter = [1,1,1]
+        BOSScounter = [5,10,15]
         BOSSfireball = [5,3,2]
         gameOption = [control[Option[0]-1],fireball[Option[1]-1],enemy_num[Option[1]-1],BOSScounter[Option[1]-1],BOSSfireball[Option[1]-1],]
 
