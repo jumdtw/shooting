@@ -98,6 +98,7 @@ class Option:
                 stars[i][1] = (stars[i][1] + i + 1) % HEIGHT
                 pygame.draw.rect(self.Screen, WHITE, stars[i])
 
+            
             #選択肢の文字列を描画
             x = 130
             y = 200
