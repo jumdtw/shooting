@@ -18,7 +18,7 @@ class Shooting:
     def __init__(self,screen):
         self.Screen = screen
 
-    def Main_Game(self,control):
+    def Main_Game(self,Option):
         class Spclass(pygame.sprite.Sprite):
             def __init__(self, x, y, angle, num):
                 pygame.sprite.Sprite.__init__(self)
@@ -65,13 +65,13 @@ class Shooting:
                 #移動処理
                 press = pygame.key.get_pressed()
                 if(press[pygame.K_UP]):
-                    self.rect.centery -= control
+                    self.rect.centery -= gameOption[0]
                 if(press[pygame.K_DOWN]):
-                    self.rect.centery += control              
+                    self.rect.centery += gameOption[0]              
                 if(press[pygame.K_LEFT]):
-                    self.rect.centerx -= control
+                    self.rect.centerx -= gameOption[0]
                 if(press[pygame.K_RIGHT]):
-                    self.rect.centerx += control
+                    self.rect.centerx += gameOption[0]
 
                 
                 #センタリング
@@ -107,7 +107,7 @@ class Shooting:
                 self.rect.centery += 2
                 self.rect.centerx += int((self.time % 200 ) / 100 ) * 2 - 1
 
-                if allgroup.has(player) == 0 or random.randint(0, 100) != 0: return 
+                if allgroup.has(player) == 0 or random.randint(0, gameOption[1]) != 0: return 
                 dx = player.rect.centerx - self.rect.centerx
                 dy = player.rect.centery - self.rect.centery
                 angle = math.degrees(math.atan2(dy,dx)) + 90
@@ -121,7 +121,7 @@ class Shooting:
                     return 
                 rad = math.radians(self.time - 100)
                 self.rect.centerx = (WIDTH/2) + (math.sin(rad) * 300)
-                if(self.time % 3 ==0):
+                if(self.time % gameOption[4] ==0):
                     angle = (self.time * 17) % 360
                     newsp = Fireball(self.rect.centerx, self.rect.centery, angle, 2)
                     allgroup.add(newsp)
@@ -136,8 +136,14 @@ class Shooting:
 
 
 
+        control = [3,6,10]
+        fireball = [120,100,50]
+        enemy_num = [70,45,25]
+        BOSScounter = [1,1,1]
+        BOSSfireball = [5,3,2]
+        gameOption = [control[Option[0]-1],fireball[Option[1]-1],enemy_num[Option[1]-1],BOSScounter[Option[1]-1],BOSSfireball[Option[1]-1],]
+
         pygame.init()
-        #screen = pygame.display.set_mode((WIDTH,HEIGHT))
         myfont = pygame.font.Font(None, 100)
         miifont = pygame.font.Font(None,45)
         mifont = pygame.font.Font(None,25)
@@ -193,7 +199,7 @@ class Shooting:
                     stars[i][1] = (stars[i][1] + i + 1) % HEIGHT
                     pygame.draw.rect(self.Screen, WHITE, stars[i])
                 
-                if bosscounter >= 15 and Bossflag == 0:
+                if bosscounter >= gameOption[3] and Bossflag == 0:
                     boss = Boss(WIDTH/2,0,0,5)
                     Bossflag = 1
                     allgroup.add(boss) 
@@ -210,7 +216,7 @@ class Shooting:
                         imageTime = miifont.render("Clear Time:" + str(tttime),True,WHITE)
                         self.Screen.blit(imageTime,(WIDTH/2-100,HEIGHT/2 + 80))
                 #enemy 
-                elif random.randint(0,45) == 0:
+                elif random.randint(0,gameOption[2]) == 0:
                     x = random.randint(0,WIDTH - 200) + 100
                     newsp = Fighter(x,0,180,4)
                     allgroup.add(newsp)
