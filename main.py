@@ -26,7 +26,7 @@ Game_option = [2,2]
 while True:
     choices = myMenu.title()
     if choices == Choices["START"]:
-        print(Game_option)
+        
         ReturnMenuFlag = myShooting.Main_Game(Game_option)
         if not ReturnMenuFlag:
             break
