@@ -26,10 +26,12 @@ CREDIT = 3
 #スプライトクラス
 class Shooting:
 
-    def __init__(self,screen):
+    def __init__(self,screen,wii):
         self.Screen = screen
+        self.wii = wii
 
     def Main_Game(self,Option):
+        WII = self.wii
         class Spclass(pygame.sprite.Sprite):
             def __init__(self, x, y, angle, num):
                 pygame.sprite.Sprite.__init__(self)
@@ -42,6 +44,7 @@ class Shooting:
                 self.hp = charas[num].hp
                 self.enemy = charas[num].enemy
                 self.time = 0
+                self.wii = WII
 
         #爆発クラス
         class Explosion(Spclass):
@@ -75,7 +78,7 @@ class Shooting:
             def update(self):
                 #移動処理
                
-                buttons = wii.state['buttons']
+                buttons = self.wii.state['buttons']
                 if(buttons & cwiid.BTN_RIGHT):
                     self.rect.centery -= gameOption[0]
                 if(buttons & cwiid.BTN_LEFT):
@@ -95,7 +98,7 @@ class Shooting:
                 if(self.rect.centery > HEIGHT - 16):
                     self.rect.centery = HEIGHT - 16
 
-                buttons = wii.state['buttons']
+                buttons = self.wii.state['buttons']
                 if(buttons & cwiid.BTN_2)  and (self.time % 10 == 0) and (self.time > 3)   :
                     newsp = Shot(self.rect.centerx,self.rect.centery,0,1)
                     allgroup.add(newsp)
@@ -190,9 +193,7 @@ class Shooting:
             continueTime = 0
             ContinueFlag = 0
             endtimer = 0
-            print('waitting...')
-            wii = cwiid.Wiimote()
-            wii.rpt_mode = cwiid.RPT_BTN
+            
             while endflag ==0:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: 

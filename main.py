@@ -24,17 +24,19 @@ myShooting = shooting.Shooting(screen)
 ReturnMenuFlag = 1
 Game_option = [2,2]
 while True:
+
     choices = myMenu.title()
-    if choices == Choices["START"]:
-        
+ 
+    if (choices == 1): print('1')
+    if (choices == Choices["START"]):
         ReturnMenuFlag = myShooting.Main_Game(Game_option)
         if not ReturnMenuFlag:
             break
-    elif choices == Choices["OPTION"]:
+    elif(choices == 1):
         Game_option = myOption.option(Game_option)
         if not ReturnMenuFlag:
             break
-    elif choices == Choices["EXIT"]:
+    elif(choices == Choices["EXIT"]):
         break
 
     

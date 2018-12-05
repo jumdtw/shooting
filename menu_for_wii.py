@@ -2,6 +2,8 @@ import pygame
 #KEYDOWNの定義など
 from pygame.locals import * 
 import random
+import cwiid
+import time
 
 #rect 
 WIDTH  = 1024
@@ -24,13 +26,14 @@ Choices = {
 select = {0:'Start',1:'Option',2:'Exit'}
 class Menu:
     
-    def __init__(self,screen):
+    def __init__(self,screen,wii):
         pygame.init()
         self.SELECT = 0
         self.myclock = pygame.time.Clock()
         self.Screen = screen
         self.Titlefont = pygame.font.Font(None, 100)
         self.Selectfont = pygame.font.Font(None, 50)
+        self.wii = wii
 
     def title(self):
         endflag = 1
@@ -45,8 +48,11 @@ class Menu:
             y = random.randint(0, HEIGHT -1)
             stars.append([x,y,2,2])
 
+        #timer 
+        timer = 0
+
         while endflag:
-            
+ 
             if(selectnum >= 3):
                 selectnum = 0
             elif(selectnum < 0):
@@ -74,20 +80,26 @@ class Menu:
             self.Screen.blit(TITLEtext,(WIDTH/2-140,HEIGHT/2-110)) 
 
             #キーイベント処理
+            buttons = self.wii.state['buttons']
+            if(buttons & cwiid.BTN_LEFT and timer%8 == 0):
+                selectnum += 1
+            elif(buttons & cwiid.BTN_RIGHT and timer%8 == 0):
+                selectnum -= 1
+            
+            if(buttons & cwiid.BTN_2 and timer%8 == 0 and timer >= 30):
+                self.SELECT = selectnum
+                endflag -= 1
+            
+            timer += 1
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
                     self.SELECT = Choices['EXIT']
                     endflag -= 1
-                if event.type == KEYDOWN:
-                    if event.key == K_DOWN: selectnum += 1
-                    if event.key == K_UP: selectnum -= 1
-                    if event.key == K_SPACE:
-                        self.SELECT = selectnum
-                        endflag -= 1
+          
 
-            
             self.myclock.tick(60)
             pygame.display.flip()
-        return self.SELECT
+        return selectnum
 
 
